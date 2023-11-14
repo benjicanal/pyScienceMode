@@ -39,8 +39,10 @@ class RehastimP24(RehastimGeneric):
         self._current_no_channel = None
         self._current_stim_sequence = None
         self._current_pulse_interval = None
+        self._current_stim_duration = None
         self.device_type = Device.Rehastimp24.value
         self._safety = True
+
 
         super().__init__(port, device_type=self.device_type, show_log=self.show_log)
 
@@ -451,6 +453,7 @@ class RehastimP24(RehastimGeneric):
 
         self.list_channels = upd_list_channels
         self._safety = safety
+        self._current_stim_duration = stimulation_duration
         ml_update = sciencemode.ffi.new("Smpt_ml_update*")
         ml_update.packet_number = self.get_next_packet_number()
 
@@ -508,8 +511,10 @@ class RehastimP24(RehastimGeneric):
         stimulation_duration : int | float
             Duration of the updated stimulation in seconds.
         """
+        if stimulation_duration is not None:
+            self._current_stim_duration = stimulation_duration
 
-        self.start_stimulation(upd_list_channels, stimulation_duration, self._safety)
+        self.start_stimulation(upd_list_channels, self._current_stim_duration, self._safety)
 
     def end_stimulation(self):
         """

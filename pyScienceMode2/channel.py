@@ -84,6 +84,7 @@ class Channel:
                 raise TypeError("mode must be a string or a Modes enum instance")
         else:
             self._mode = Modes.NONE.value
+
         self._ramp = ramp
         self.check_value_param()
 
