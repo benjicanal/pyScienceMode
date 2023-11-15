@@ -12,16 +12,16 @@ class Channel:
     MAX_POINTS = 16
 
     def __init__(
-        self,
-        mode: str | Modes = None,
-        no_channel: int = 1,
-        amplitude: int | float = 0,
-        pulse_width: int = 0,
-        enable_low_frequency: bool = False,
-        name: str = None,
-        device_type: str | Device = None,
-        frequency: float = 50.0,
-        ramp: int = 0,
+            self,
+            mode: str | Modes = None,
+            no_channel: int = 1,
+            amplitude: int | float = 0, #TODO : current intensity is {amplitude} mA for RehastimP24, maximum is 130 mA
+            pulse_width: int = 0,
+            enable_low_frequency: bool = False,
+            name: str = None,
+            device_type: str | Device = None,
+            frequency: float = 50.0,
+            ramp: int = 0,
     ):
         """
         Create an object Channel.
@@ -492,8 +492,8 @@ class Point:
 
         if not (0 <= self.pulse_width <= 4095):
             raise ValueError("Pulse width must be between 0 and 4065.")
-        if not (-150 <= self.amplitude <= 150):
-            raise ValueError("Amplitude must be between -150 and 150.")
+        if not (-130 <= self.amplitude <= 130):
+            raise ValueError("Amplitude must be between -130 and 130.")
 
     def set_amplitude(self, amplitude: int | float):
         """

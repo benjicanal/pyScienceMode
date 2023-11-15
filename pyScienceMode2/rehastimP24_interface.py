@@ -43,7 +43,6 @@ class RehastimP24(RehastimGeneric):
         self.device_type = Device.Rehastimp24.value
         self._safety = True
 
-
         super().__init__(port, device_type=self.device_type, show_log=self.show_log)
 
     #  General level commands
@@ -350,6 +349,39 @@ class RehastimP24(RehastimGeneric):
             time.sleep(pulse_interval / 1000)
             self._get_last_ack()
             self.check_ll_channel_config_ack()
+
+    def single_pulse(self, no_channel: int, points: list, safety: bool = True):
+
+        positive_area = 0
+        negative_area = 0
+        channel, connector = self._channel_number_to_channel_connector(no_channel)
+        ll_config = sciencemode.ffi.new("Smpt_ll_channel_config*")
+
+        ll_config.enable_stimulation = True
+        ll_config.channel = channel
+        ll_config.connector = connector
+        ll_config.number_of_points = len(points)
+
+        for j, point in enumerate(points):
+            ll_config.points[j].time = point.pulse_width
+            ll_config.points[j].current = point.amplitude
+
+        if safety is True:
+            for point in points:
+                if point.amplitude > 0:
+                    positive_area += point.amplitude * point.pulse_width
+                else:
+                    negative_area -= point.amplitude * point.pulse_width
+            if abs(positive_area - negative_area) > 1e-6:
+                raise ValueError(
+                    "The points are not symmetric based on amplitude.\n"
+                    "Polarization and depolarization must have the same area.\n"
+                    "Or set safety=False in start_stim_one_channel_stimulation."
+                )
+        ll_config.packet_number = self.get_next_packet_number()
+        sciencemode.lib.smpt_send_ll_channel_config(self.device, ll_config)
+        # self._get_last_ack()
+        # self.check_ll_channel_config_ack()
 
     def check_ll_channel_config_ack(self):
         """
