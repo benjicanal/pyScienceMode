@@ -1,11 +1,10 @@
-import numpy as np
 
 from pyScienceMode2 import Channel, Point, Device, Modes
 from pyScienceMode2 import RehastimP24 as St
 from pyScienceMode2 import Rehastim2 as St2
 import random
 from time import sleep
-from sciencemode_p24 import sciencemode
+from sciencemode import sciencemode
 # from biosiglive import ViconClient, DeviceType
 
 stimulatorp24 = St(port="COM4", show_log=False)

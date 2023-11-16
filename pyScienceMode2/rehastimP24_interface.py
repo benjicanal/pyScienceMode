@@ -6,7 +6,7 @@ from .utils import (
     check_list_channel_order,
 )
 from .sciencemode import RehastimGeneric
-from sciencemode_p24 import sciencemode
+from sciencemode import sciencemode
 from .enums import Device, HighVoltage, StimStatus
 from .channel import Point
 
@@ -267,9 +267,9 @@ class RehastimP24(RehastimGeneric):
         self,
         no_channel: int,
         points: list,
-        # stim_sequence: int,
+        stim_sequence: int,
         pulse_interval: int | float,
-        pulse_duration: int | float,
+        # pulse_duration: int | float,
         total_duration: int | float,
         safety: bool = True,
     ):
@@ -292,8 +292,8 @@ class RehastimP24(RehastimGeneric):
 
         self.ll_init()
         total_duration_ms = total_duration * 1000
-        # if not isinstance(stim_sequence, int):
-        #     raise TypeError("Please provide a int type for stim_sequence")
+        if not isinstance(stim_sequence, int):
+            raise TypeError("Please provide a int type for stim_sequence")
         if not isinstance(pulse_interval, int | float):
             raise TypeError("Please provide a int or float type for pulse_interval")
         if not isinstance(points, list):
@@ -309,10 +309,10 @@ class RehastimP24(RehastimGeneric):
             raise ValueError(f"pulse_interval min = 0.5ms, max = 16383ms, value given {pulse_interval}ms. ")
 
         self._current_no_channel = no_channel
-        # self._current_stim_sequence = stim_sequence
+        self._current_stim_sequence = stim_sequence
         self._current_pulse_interval = pulse_interval
         self.log("Low level stimulation started")
-        stim_sequence = int(total_duration_ms / (pulse_duration + pulse_interval))
+        # stim_sequence = int(total_duration_ms / (pulse_duration + pulse_interval))
         positive_area = 0
         negative_area = 0
 
@@ -383,8 +383,8 @@ class RehastimP24(RehastimGeneric):
                 )
         ll_config.packet_number = self.get_next_packet_number()
         sciencemode.lib.smpt_send_ll_channel_config(self.device, ll_config)
-        # self._get_last_ack()
-        # self.check_ll_channel_config_ack()
+        self._get_last_ack()
+        self.check_ll_channel_config_ack()
 
     def check_ll_channel_config_ack(self):
         """

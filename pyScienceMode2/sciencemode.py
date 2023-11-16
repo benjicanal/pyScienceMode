@@ -7,7 +7,7 @@ import threading
 import serial
 import time
 
-import numpy as np
+# import numpy as np
 
 from .utils import packet_construction, signed_int
 from .acks import (
@@ -20,7 +20,7 @@ from .acks import (
 )
 from .enums import Rehastim2Commands, RehastimP24Commands, Device
 
-from sciencemode_p24 import sciencemode
+from sciencemode import sciencemode
 
 # Notes :
 # This code needs to be used in parallel with the "ScienceMode2 - Description and protocol" document
