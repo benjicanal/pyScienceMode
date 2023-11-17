@@ -8,7 +8,7 @@ from .utils import (
 from .sciencemode import RehastimGeneric
 from sciencemode import sciencemode
 from .enums import Device, HighVoltage, StimStatus
-from .channel import Point
+from .channel import Point, Channel
 
 
 class RehastimP24(RehastimGeneric):
@@ -270,7 +270,7 @@ class RehastimP24(RehastimGeneric):
         stim_sequence: int,
         pulse_interval: int | float,
         # pulse_duration: int | float,
-        total_duration: int | float,
+        # total_duration: int | float,
         safety: bool = True,
     ):
         """
@@ -291,7 +291,7 @@ class RehastimP24(RehastimGeneric):
         """
 
         self.ll_init()
-        total_duration_ms = total_duration * 1000
+        # total_duration_ms = total_duration * 1000
         if not isinstance(stim_sequence, int):
             raise TypeError("Please provide a int type for stim_sequence")
         if not isinstance(pulse_interval, int | float):
@@ -445,7 +445,17 @@ class RehastimP24(RehastimGeneric):
         """
         if self.stimulation_started:
             self.end_stimulation()
-        self.list_channels = list_channels
+
+        for index, channel in enumerate(list_channels):
+            if not isinstance(channel, Channel):
+                raise TypeError(
+                    f"Item at index {index} is not a Channel instance, got {type(channel).__name__} type instead."
+                    )
+        if not list_channels:
+            raise ValueError("Please provide at least one channel for stimulation.")
+        else:
+            self.list_channels = list_channels
+
         check_unique_channel(list_channels)
         self.electrode_number = calc_electrode_number(self.list_channels)
 

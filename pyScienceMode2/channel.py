@@ -15,7 +15,7 @@ class Channel:
             self,
             mode: str | Modes = None,
             no_channel: int = 1,
-            amplitude: int | float = 0, #TODO : current intensity is {amplitude} mA for RehastimP24, maximum is 130 mA
+            amplitude: int | float = 0,
             pulse_width: int = 0,
             enable_low_frequency: bool = False,
             name: str = None,
@@ -84,6 +84,11 @@ class Channel:
                 raise TypeError("mode must be a string or a Modes enum instance")
         else:
             self._mode = Modes.NONE.value
+
+        if mode is not None and pulse_width is None:
+            raise ValueError("pulse_width must be provided if mode is not None")
+        if mode is not None and amplitude is None:
+            raise ValueError("amplitude must be provided if mode is not None")
 
         self._ramp = ramp
         self.check_value_param()
@@ -235,8 +240,8 @@ class Channel:
                 )
             if self._no_channel < 1 or self._no_channel > 8:
                 raise ValueError("Error : 8 channel possible. Channel given : %s" % self._no_channel)
-            if self._amplitude < 0 or self._amplitude > 150:
-                raise ValueError("Error : Amplitude min = 0, max = 150. Amplitude given : %s" % self._amplitude)
+            if self._amplitude < 0 or self._amplitude > 130:
+                raise ValueError("Error : Amplitude min = 0, max = 130. Amplitude given : %s" % self._amplitude)
             if self._pulse_width < 0 or self._pulse_width > 4095:
                 raise ValueError("Error : Pulse Width [0,4095], given : %s" % self._pulse_width)
             if self._ramp < 0 or self._ramp > 16:
@@ -375,7 +380,6 @@ class Channel:
             if frequency <= 0:
                 raise ValueError("frequency must be positive.")
             self._period = 1000.0 / frequency
-
             self.generate_pulse()
         else:
             raise ValueError("Frequency can not be set for individual channel for the Rehastim2")

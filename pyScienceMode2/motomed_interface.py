@@ -22,7 +22,7 @@ from .enums import Rehastim2Commands
 from .utils import packet_construction, signed_int
 
 from time import sleep
-# import numpy as np
+import numpy as np
 
 
 class _Motomed:
