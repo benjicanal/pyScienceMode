@@ -4,7 +4,7 @@ from pyScienceMode2 import Rehastim2 as St2
 import random
 from time import sleep
 from sciencemode import sciencemode
-from biosiglive import ViconClient, DeviceType
+# from biosiglive import ViconClient, DeviceType
 import numpy as np
 
 
@@ -111,12 +111,13 @@ def test_single_doublet_triplet(device: Device):
         channel_2.list_point.clear()
         channel_3.list_point.clear()
     if device == Device.Rehastim2:
-        channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=30, pulse_width=350,
+        stimulator2 = St2(port="COM3", show_log=True)
+        channel_1 = Channel(mode=Modes.SINGLE, no_channel=2, name="Biceps", amplitude=30, pulse_width=350,
                             device_type=Device.Rehastim2)
-        channel_2 = Channel(mode=Modes.DOUBLET, no_channel=2, name="Biceps", amplitude=30,
+        channel_2 = Channel(mode=Modes.DOUBLET, no_channel=3, name="Biceps", amplitude=30,
                             pulse_width=350,
                             device_type=Device.Rehastim2)
-        channel_3 = Channel(mode=Modes.TRIPLET, no_channel=3, name="Biceps", amplitude=30,
+        channel_3 = Channel(mode=Modes.TRIPLET, no_channel=4, name="Biceps", amplitude=30,
                             pulse_width=350,
                             device_type=Device.Rehastim2)
 
@@ -124,18 +125,18 @@ def test_single_doublet_triplet(device: Device):
         list_channels.append(channel_2)
         list_channels.append(channel_3)
         # TODO example pour montrer que pour changer de mode il faut reinitialiser le channel a nouveau.
-        stimulator2.init_channel(list_channels=list_channels, stimulation_interval=8)
+        stimulator2.init_channel(list_channels=list_channels, stimulation_interval=50)
         stimulator2.start_stimulation(stimulation_duration=2)
         channel_1.set_mode(Modes.DOUBLET)
         channel_2.set_mode(Modes.TRIPLET)
         channel_3.set_mode(Modes.SINGLE)
-        stimulator2.init_channel(list_channels=list_channels, stimulation_interval=8)
-        stimulator2.start_stimulation(stimulation_duration=2)
+        # stimulator2.init_channel(list_channels=list_channels, stimulation_interval=50)
+        stimulator2.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2)
         channel_1.set_mode(Modes.TRIPLET)
         channel_2.set_mode(Modes.SINGLE)
         channel_3.set_mode(Modes.DOUBLET)
-        stimulator2.init_channel(list_channels=list_channels, stimulation_interval=8)
-        stimulator2.start_stimulation(stimulation_duration=2)
+        # stimulator2.init_channel(list_channels=list_channels, stimulation_interval=50)
+        stimulator2.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2)
         stimulator2.end_stimulation()
 
         list_channels.clear()
@@ -143,7 +144,7 @@ def test_single_doublet_triplet(device: Device):
 
 def test_frequency(device: Device):
     if device == Device.Rehastimp24:
-        channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=30, pulse_width=350, frequency=20,
+        channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=30, pulse_width=350, frequency=10,
                             device_type=Device.Rehastimp24)
         list_channels.append(channel_1)
 
@@ -152,24 +153,23 @@ def test_frequency(device: Device):
         stimulatorp24.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2, safety=True)
 
         # Test with 10Hz
-        channel_1.set_frequency(10)
+        channel_1.set_frequency(50)
         stimulatorp24.update_stimulation(upd_list_channels=list_channels)
 
-        # Test with 100Hz
+        # Test with 50Hz
         channel_1.set_frequency(100)
         stimulatorp24.update_stimulation(upd_list_channels=list_channels)
 
         # Test 3 channels with different frequencies
-        channel_1.set_frequency(25)
-        channel_2 = Channel(mode=Modes.SINGLE, no_channel=2, name="Biceps", amplitude=30, pulse_width=350, frequency=10,
-                            device_type=Device.Rehastimp24)
-        channel_3 = Channel(mode=Modes.SINGLE, no_channel=3, name="Biceps", amplitude=30, pulse_width=350, frequency=50,
-                            device_type=Device.Rehastimp24)
-        list_channels.append(channel_2)
-        list_channels.append(channel_3)
-        stimulatorp24.init_stimulation(list_channels=list_channels)
 
-        stimulatorp24.update_stimulation(upd_list_channels=list_channels)
+        # channel_2 = Channel(mode=Modes.SINGLE, no_channel=2, name="Biceps", amplitude=30, pulse_width=350, frequency=10,
+        #                     device_type=Device.Rehastimp24)
+        # channel_3 = Channel(mode=Modes.SINGLE, no_channel=3, name="Biceps", amplitude=30, pulse_width=350, frequency=50,
+        #                     device_type=Device.Rehastimp24)
+        # list_channels.append(channel_2)
+        # list_channels.append(channel_3)
+        # stimulatorp24.init_stimulation(list_channels=list_channels)
+
         stimulatorp24.end_stimulation()
         list_channels.clear()
         channel_1.list_point.clear()
@@ -257,32 +257,59 @@ def more_than_16_points():
     channel_1.list_point.clear()
 
 
-def update_parameters():
-    channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=20, pulse_width=350, frequency=50,
-                        device_type=Device.Rehastimp24)
-    list_channels.append(channel_1)
-    stimulatorp24.init_stimulation(list_channels=list_channels)
-    stimulatorp24.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2, safety=True)
-    channel_1.set_frequency(10)
-    stimulatorp24.update_stimulation(upd_list_channels=list_channels)
-    channel_1.set_amplitude(10)
-    stimulatorp24.update_stimulation(upd_list_channels=list_channels)
-    channel_1.set_pulse_width(500)
-    stimulatorp24.update_stimulation(upd_list_channels=list_channels)
-    channel_1.set_mode(Modes.TRIPLET)
-    stimulatorp24.update_stimulation(upd_list_channels=list_channels)
-    channel_1.set_frequency(20)
-    channel_1.set_amplitude(20)
-    channel_1.set_pulse_width(350)
-    channel_1.set_mode(Modes.SINGLE)
-    channel_1.set_no_channel(2)
-    stimulatorp24.init_stimulation(list_channels=list_channels)
-    sleep(2)
-    stimulatorp24.update_stimulation(upd_list_channels=list_channels)
-    stimulatorp24.end_stimulation()
+def update_parameters(device: Device):
+    if device == Device.Rehastimp24:
+        channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=20, pulse_width=350, frequency=50,
+                            device_type=Device.Rehastimp24)
+        list_channels.append(channel_1)
+        stimulatorp24.init_stimulation(list_channels=list_channels)
+        stimulatorp24.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2, safety=True)
+        channel_1.set_frequency(10)
+        stimulatorp24.update_stimulation(upd_list_channels=list_channels)
+        channel_1.set_amplitude(10)
+        stimulatorp24.update_stimulation(upd_list_channels=list_channels)
+        channel_1.set_pulse_width(500)
+        stimulatorp24.update_stimulation(upd_list_channels=list_channels)
+        channel_1.set_mode(Modes.TRIPLET)
+        stimulatorp24.update_stimulation(upd_list_channels=list_channels)
+        channel_1.set_frequency(20)
+        channel_1.set_amplitude(20)
+        channel_1.set_pulse_width(350)
+        channel_1.set_mode(Modes.SINGLE)
+        channel_1.set_no_channel(2)
+        stimulatorp24.init_stimulation(list_channels=list_channels)
+        sleep(2)
+        stimulatorp24.update_stimulation(upd_list_channels=list_channels)
+        stimulatorp24.end_stimulation()
 
-    list_channels.clear()
-    channel_1.list_point.clear()
+        list_channels.clear()
+        channel_1.list_point.clear()
+    else :
+        stimulator2 = St2(port="COM3", show_log=True)
+        channel_1 = Channel(mode=Modes.SINGLE, no_channel=2, name="Biceps", amplitude=20, pulse_width=350,
+                            device_type=Device.Rehastim2)
+        list_channels.append(channel_1)
+        stimulator2.init_channel(list_channels=list_channels, stimulation_interval=20)
+        stimulator2.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2)
+        stimulator2.init_channel(list_channels=list_channels, stimulation_interval=100)
+        stimulator2.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2)
+        channel_1.set_amplitude(10)
+        stimulator2.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2)
+        channel_1.set_pulse_width(500)
+        stimulator2.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2)
+        channel_1.set_mode(Modes.TRIPLET)
+        stimulator2.start_stimulation(upd_list_channels=list_channels, stimulation_duration=2)
+
+        channel_1.set_amplitude(20)
+        channel_1.set_pulse_width(350)
+        channel_1.set_mode(Modes.SINGLE)
+        channel_1.set_no_channel(3)
+        stimulator2.init_channel(list_channels=list_channels, stimulation_interval=50)
+        sleep(1)
+        stimulator2.start_stimulation(upd_list_channels=list_channels,stimulation_duration=2)
+        stimulator2.end_stimulation()
+        stimulator2.disconnect()
+        list_channels.clear()
 
 
 def test_diff_frequency_ll_ml(frequency):
@@ -375,6 +402,7 @@ def test_limit(device: Device):
 
 
 def communication_speed_r2():
+    stimulator2 = St2(port="COM3", show_log=True)
     channel_1 = Channel(
         mode=Modes.SINGLE,
         no_channel=2,
@@ -387,15 +415,15 @@ def communication_speed_r2():
     list_channels.append(channel_1)
     stimulator2.init_channel(stimulation_interval=8, list_channels=list_channels)
     amplitude = 10
-
     waiting_time = 1
     while True:
-        stimulator2.start_stimulation(stimulation_duration=0.025)
+        stimulator2.start_stimulation(stimulation_duration=0.35)
         amplitude *= 1.01
         channel_1.set_amplitude(amplitude)
         sleep(waiting_time)
         waiting_time *= 0.9
         print(waiting_time)
+
 
 
 def decalage(freq1, freq2, freq3, device: Device):
@@ -468,13 +496,18 @@ def exe():
 
 
 if __name__ == '__main__':
-    # stimulator2 = St2(port="COM4", show_log=True)
-    stimulatorp24 = St(port="COM4", show_log=True)
+    # stimulatorp24 = St(port="COM4", show_log=True)
+    stimulator2 = St2(port="COM3", show_log=True)
     list_points = []
     list_channels = []
-    channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=30,
-                        pulse_width=350,
-                        device_type=Device.Rehastimp24)
+    channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=20, pulse_width=350,device_type=Device.Rehastim2)
     list_channels.append(channel_1)
-    stimulatorp24.init_stimulation(list_channels=list_channels)
-    get_trigger()
+    stimulator2.init_channel(list_channels=list_channels, stimulation_interval=30)
+    stimulator2.start_stimulation(upd_list_channels=list_channels, stimulation_duration=5)
+    # communication_speed_r2()
+    # channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=30,
+    #                     pulse_width=350,
+    #                     device_type=Device.Rehastimp24)
+    # list_channels.append(channel_1)
+    # stimulatorp24.init_stimulation(list_channels=list_channels)
+    # get_trigger()
