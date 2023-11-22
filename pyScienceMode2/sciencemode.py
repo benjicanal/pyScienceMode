@@ -7,7 +7,7 @@ import threading
 import serial
 import time
 
-# import numpy as np
+import numpy as np
 
 from .utils import packet_construction, signed_int
 from .acks import (
@@ -188,8 +188,8 @@ class RehastimGeneric:
         """
         Retrieve current data from the rehastimP24 mid level stimulation.
         """
+        ml_get_current_data = sciencemode.ffi.new("Smpt_ml_get_current_data*")
         if self.device_type == Device.Rehastimp24.value:
-            ml_get_current_data = sciencemode.ffi.new("Smpt_ml_get_current_data*")
             ml_get_current_data.data_selection = sciencemode.lib.Smpt_Ml_Data_Channels
             ml_get_current_data.packet_number = self.get_next_packet_number()
 

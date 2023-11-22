@@ -544,7 +544,25 @@ class RehastimP24(RehastimGeneric):
             sleep_time = min(1, stimulation_duration - total_time)
             time.sleep(sleep_time)
             total_time += sleep_time
+        self.pause_stimulation()
         self.stimulation_started = True
+
+    def pause_stimulation(self):
+        """
+        Pause the mid-level stimulation on the RehaStimP24 device by setting all points to zero amplitude.
+        """
+        if self.list_channels is None:
+            raise RuntimeError("No channels initialized for pausing stimulation.")
+
+        original_points = {}
+        for channel in self.list_channels:
+            original_points[channel._no_channel] = channel.list_point.copy()
+            for point in channel.list_point:
+                point.amplitude = 0
+        self.update_stimulation(upd_list_channels=self.list_channels)
+        print(self._current_stim_duration)
+        for channel in self.list_channels:
+            channel.list_point = original_points[channel._no_channel]
 
     def update_stimulation(self, upd_list_channels: list, stimulation_duration: int | float = None):
         """
