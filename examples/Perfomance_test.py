@@ -35,7 +35,7 @@ def init_trigger():
 # stimulator2 = St2(port="COM3", show_log=True)
 
 
-def test_custom_shape_pulse():
+def custom_shape_pulse():
     """
     Test of the new feature : custom shape pulse
     """
@@ -74,7 +74,7 @@ def test_custom_shape_pulse():
     channel_1.list_point.clear()
 
 
-def test_single_doublet_triplet(device: Device):
+def single_doublet_triplet(device: Device):
     """
     Mode test (single, doublet, triplet)
     """
@@ -142,7 +142,7 @@ def test_single_doublet_triplet(device: Device):
         list_channels.clear()
 
 
-def test_frequency(device: Device):
+def frequency_test(device: Device):
     if device == Device.Rehastimp24:
         channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=30, pulse_width=350, frequency=10,
                             device_type=Device.Rehastimp24)
@@ -188,7 +188,7 @@ def test_frequency(device: Device):
         list_channels.clear()
 
 
-def test_force_rehastim2():
+def force_rehastim2():
     channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=30, pulse_width=300,
                         device_type=Device.Rehastim2)
 
@@ -202,10 +202,10 @@ def test_force_rehastim2():
     list_channels.clear()
 
 
-def test_force_rehastimp24():
+def force_rehastimp24():
     list_channels = []
-    stimulatorp24 = St(port="COM4", show_log=True)
-    channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=10, pulse_width=300, frequency=30.3,
+    stimulatorp24 = St(port="COM4", show_log="Status")
+    channel_1 = Channel(mode=Modes.SINGLE, no_channel=1, name="Biceps", amplitude=10, pulse_width=300, frequency=100,
                         device_type=Device.Rehastimp24)
     list_channels.append(channel_1)
     # point11 = Point(300, 20)
@@ -218,16 +218,20 @@ def test_force_rehastimp24():
     #     sleep(1)
     stimulatorp24.init_stimulation(list_channels=list_channels)
     # for i in range(10):
-    #     stimulatorp24.init_stimulation(list_channels=list_channels)
-    #     stimulatorp24.start_stimulation(upd_list_channels=list_channels, stimulation_duration=1, safety=True)
+    #     # stimulatorp24.init_stimulation(list_channels=list_channels)
+    #     stimulatorp24.start_stimulation(upd_list_channels=list_channels, stimulation_duration=0.5, safety=True)
     #     # stimulatorp24.end_stimulation()
-    #     sleep(1)
-    stimulatorp24.start_stimulation(upd_list_channels=list_channels, stimulation_duration=5, safety=True)
+    #     sleep(0.5)
+    stimulatorp24.start_stimulation(upd_list_channels=list_channels, stimulation_duration=1, safety=True)
+    #
+    # stimulatorp24.update_stimulation(upd_list_channels=list_channels)
+    # list_channels.clear()
+    # channel_1.list_point.clear()
 
     # stimulatorp24.end_stimulation()
     # list_channels.clear()
     # list_points.clear()
-
+    
 
 def more_than_16_points():
     channel_1 = Channel(no_channel=1, name="Biceps", frequency=20, device_type=Device.Rehastimp24)
@@ -320,7 +324,7 @@ def update_parameters(device: Device):
         list_channels.clear()
 
 
-def test_diff_frequency_ll_ml(frequency):
+def diff_frequency_ll_ml(frequency):
     channel_1 = Channel(no_channel=1, name="Biceps", amplitude=20, pulse_width=350,
                         frequency=frequency,
                         device_type=Device.Rehastimp24)
@@ -388,7 +392,7 @@ def communication_speed():
         print(waiting_time)
 
 
-def test_limit(device: Device):
+def limit_parameters(device: Device):
     if device == Device.Rehastimp24:
         channel_1 = Channel(no_channel=1, name="Biceps",
                             frequency=15,
@@ -491,16 +495,16 @@ def exe():
     channel_1.list_point.clear()
 
 
-# test_force_rehastim2()
+# force_rehastim2()
 # test_force_rehastimp24()
-# test_frequency()
-# test_single_doublet_triplet(Device.Rehastim2)
-# test_custom_shape_pulse()
+# frequency_test()
+# single_doublet_triplet(Device.Rehastim2)
+# custom_shape_pulse()
 # more_than_16_points()
 # update_parameters()
-# test_diff_frequency_ll_ml(50)
+# diff_frequency_ll_ml(50)
 # communication_speed()
-# test_limit(device=Device.Rehastim2)
+# limit_parameters(device=Device.Rehastim2)
 # communication_speed_r2()
 # decalage(50, 25, 25, Device.Rehastim2)
 # exe()
@@ -522,7 +526,7 @@ if __name__ == '__main__':
     # list_channels.append(channel_1)
     # stimulatorp24.init_stimulation(list_channels=list_channels)
     # get_trigger()
-    # test_diff_frequency_ll_ml(200)
+    # diff_frequency_ll_ml(200)
     # decalage(50, 50, 25, Device.Rehastim2)
-    # test_frequency(Device.Rehastim2)
-    test_force_rehastimp24()
+    # frequency_test(Device.Rehastim2)
+    force_rehastimp24()

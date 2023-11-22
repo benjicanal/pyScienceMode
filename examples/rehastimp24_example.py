@@ -155,7 +155,7 @@ If you set the safety flag to False, it will not check if the stimulation points
 for a muscle loading and unloading phase. 
 """
 stimulator.start_stim_one_channel_stimulation(
-    no_channel=1, points=list_stimulation_points, stim_sequence=5, pulse_interval=1)
+    no_channel=1, points=list_stimulation_points, stim_sequence=30, pulse_interval=10)
 
 # You can update the configuration of the point during the stimulation.
 point11.set_amplitude(30)
